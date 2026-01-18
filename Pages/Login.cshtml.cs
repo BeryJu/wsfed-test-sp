@@ -1,18 +1,19 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WsfedTestSP.Pages;
 
-[Authorize]
-public class IndexModel : PageModel
+public class LoginModel : PageModel
 {
-
-    public void OnGet()
+    public IActionResult OnGet()
     {
+        return Challenge(new AuthenticationProperties
+        {
+            RedirectUri = "/"
+        }, WsFederationDefaults.AuthenticationScheme);
     }
 
     // Logout

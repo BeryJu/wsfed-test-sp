@@ -1,5 +1,9 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using WsfedTestSP.Data;
 
 namespace WsfedTestSP;
@@ -20,16 +24,16 @@ public class Startup
         var connectionString = Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(connectionString));
-        services.AddDefaultIdentity<IdentityUser>(options =>
-        {
-            options.SignIn.RequireConfirmedAccount = false;
-            options.SignIn.RequireConfirmedEmail = false;
-        })
-            .AddEntityFrameworkStores<ApplicationDbContext>();
         services.AddDatabaseDeveloperPageExceptionFilter();
 
-        services.AddAuthentication()
-            .AddWsFederation(options => {
+        services.AddAuthentication(sharedOptions =>
+            {
+                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddWsFederation(options =>
+            {
                 options.MetadataAddress = Environment.GetEnvironmentVariable("WSFED_TEST_SP_METADATA");
                 options.Wtrealm = Environment.GetEnvironmentVariable("WSFED_TEST_SP_WTREALM");
             });
@@ -73,6 +77,9 @@ public class Startup
         {
             endpoints.MapHealthChecks("/healthz");
             endpoints.MapStaticAssets();
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
             endpoints.MapRazorPages().WithStaticAssets();
         });
     }
