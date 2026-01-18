@@ -20,19 +20,23 @@ public class Startup
         var connectionString = Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(connectionString));
-        services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        services.AddDefaultIdentity<IdentityUser>(options => {
+            options.SignIn.RequireConfirmedAccount = false;
+            options.SignIn.RequireConfirmedEmail = false;
+        })
             .AddEntityFrameworkStores<ApplicationDbContext>();
         services.AddDatabaseDeveloperPageExceptionFilter();
 
         services.AddAuthentication()
-            .AddWsFederation(options =>
-            {
+            .AddWsFederation(options => {
                 options.MetadataAddress = Environment.GetEnvironmentVariable("WSFED_TEST_SP_METADATA");
                 options.Wtrealm = Environment.GetEnvironmentVariable("WSFED_TEST_SP_WTREALM");
             });
 
         services.AddHealthChecks();
-        services.AddHttpLogging();
+        services.AddHttpLogging(options => {
+            options.CombineLogs = true;
+        });
 
         services.AddRazorPages();
     }
