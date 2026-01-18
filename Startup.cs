@@ -39,6 +39,15 @@ public class Startup
             });
 
         services.AddHealthChecks();
+
+        services.AddLogging(options =>
+        {
+            options.AddSimpleConsole(opts =>
+            {
+                opts.UseUtcTimestamp = true;
+                opts.SingleLine = true;
+            });
+        });
         services.AddHttpLogging();
 
         services.AddRazorPages();
