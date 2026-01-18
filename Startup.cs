@@ -20,10 +20,20 @@ public class Startup
         var connectionString = Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(connectionString));
-        services.AddDatabaseDeveloperPageExceptionFilter();
-
         services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>();
+        services.AddDatabaseDeveloperPageExceptionFilter();
+
+        services.AddAuthentication()
+            .AddWsFederation(options =>
+            {
+                options.MetadataAddress = Environment.GetEnvironmentVariable("WSFED_TEST_SP_METADATA");
+                options.Wtrealm = Environment.GetEnvironmentVariable("WSFED_TEST_SP_WTREALM");
+            });
+
+        services.AddHealthChecks();
+        services.AddHttpLogging();
+
         services.AddRazorPages();
     }
 
@@ -42,6 +52,7 @@ public class Startup
             app.UseHsts();
         }
 
+        app.UseHttpLogging();
         app.UseHttpsRedirection();
 
         app.UseRouting();
@@ -51,9 +62,7 @@ public class Startup
 
         app.UseEndpoints(endpoints =>
         {
-            // endpoints.MapControllerRoute(
-            //     name: "default",
-            //     pattern: "{controller=Home}/{action=Index}/{id?}");
+            endpoints.MapHealthChecks("/healthz");
             endpoints.MapStaticAssets();
             endpoints.MapRazorPages().WithStaticAssets();
         });
