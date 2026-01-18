@@ -1,0 +1,21 @@
+name: ci-build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+          cache: true
+      - run: |
+          dotnet restore --locked-mode
+      - run: |
+          dotnet build

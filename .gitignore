@@ -57,3 +57,4 @@ TestResult.xml
 nunit-*.xml
 
 app.db*
+test.sh
