@@ -1,8 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WsfedTestSP.Pages;
@@ -10,18 +6,13 @@ namespace WsfedTestSP.Pages;
 [Authorize]
 public class IndexModel : PageModel
 {
-
     public void OnGet()
     {
-    }
-
-    // Logout
-    public async Task<IActionResult> Logout()
-    {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return SignOut(new AuthenticationProperties
+        var userClaims = new Dictionary<string, string>();
+        foreach (var claim in User.Claims)
         {
-            RedirectUri = "/"
-        }, WsFederationDefaults.AuthenticationScheme);
+            userClaims[claim.Type] = claim.Value;
+        }
+        ViewData["userClaims"] = userClaims;
     }
 }

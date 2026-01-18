@@ -11,8 +11,8 @@
 </div>
 
 <pre>
-@JsonSerializer.Serialize(User, new JsonSerializerOptions() {
+@Html.Raw(JsonSerializer.Serialize(ViewData["userClaims"], new JsonSerializerOptions {
     ReferenceHandler = ReferenceHandler.IgnoreCycles,
     WriteIndented = true,
-})
+}))
 </pre>
