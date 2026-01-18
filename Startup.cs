@@ -20,7 +20,8 @@ public class Startup
         var connectionString = Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(connectionString));
-        services.AddDefaultIdentity<IdentityUser>(options => {
+        services.AddDefaultIdentity<IdentityUser>(options =>
+        {
             options.SignIn.RequireConfirmedAccount = false;
             options.SignIn.RequireConfirmedEmail = false;
         })
@@ -34,9 +35,7 @@ public class Startup
             });
 
         services.AddHealthChecks();
-        services.AddHttpLogging(options => {
-            options.CombineLogs = true;
-        });
+        services.AddHttpLogging();
 
         services.AddRazorPages();
     }
@@ -44,6 +43,12 @@ public class Startup
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+        {
+            var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+            context?.Database.Migrate();
+        }
+
         // Configure the HTTP request pipeline.
         if (env.IsDevelopment())
         {
