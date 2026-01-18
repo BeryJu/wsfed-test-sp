@@ -7,6 +7,10 @@
     <UserSecretsId>aspnet-WsfedTestSP-77a2f82c-c54c-4e4a-9003-40f01222c424</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
