@@ -36,6 +36,7 @@ public class Startup
             {
                 options.MetadataAddress = Environment.GetEnvironmentVariable("WSFED_TEST_SP_METADATA");
                 options.Wtrealm = Environment.GetEnvironmentVariable("WSFED_TEST_SP_WTREALM");
+                options.RequireHttpsMetadata = false;
             });
 
         services.AddHealthChecks();
