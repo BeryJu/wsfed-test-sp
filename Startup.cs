@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using WsfedTestSP.Data;
 
@@ -38,6 +39,9 @@ public class Startup
                 options.Wtrealm = Environment.GetEnvironmentVariable("WSFED_TEST_SP_WTREALM");
                 options.RequireHttpsMetadata = false;
             });
+
+        IdentityModelEventSource.ShowPII = true;
+        IdentityModelEventSource.LogCompleteSecurityArtifact = true;
 
         services.AddHealthChecks();
 
