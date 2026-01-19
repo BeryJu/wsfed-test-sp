@@ -12,9 +12,11 @@ RUN dotnet publish -a $TARGETARCH --no-restore -o /app
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
-EXPOSE 8080
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    apt-get clean
 WORKDIR /app
 COPY --link --from=build /app .
 USER $APP_UID
-HEALTHCHECK CMD curl --fail http://localhost:5000/healthz || exit 1
+HEALTHCHECK --interval=5s --start-period=1s CMD curl --fail http://localhost:8080/healthz || exit 1
 ENTRYPOINT ["./WsfedTestSP"]
