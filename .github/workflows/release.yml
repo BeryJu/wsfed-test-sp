@@ -46,7 +46,7 @@ jobs:
           sbom: true
           cache-from: type=registry,ref=ghcr.io/beryju/wsfed-test-sp:buildcache
           cache-to: type=registry,ref=ghcr.io/beryju/wsfed-test-sp:buildcache,mode=max
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
+      - uses: actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8 # v3
         with:
           subject-name: ghcr.io/beryju/wsfed-test-sp
           subject-digest: ${{ steps.build.outputs.digest }}
